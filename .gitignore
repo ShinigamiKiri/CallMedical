@@ -1,0 +1,28 @@
+# Cơ sở dữ liệu và cache của Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sqlite
+
+# Thư mục chứa kết quả biên dịch (Build results)
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Các tệp tạm thời và cấu hình cá nhân
+*.cache
+*.temp
+*.tmp
+*.log
+
+# Các tệp cấu hình của hệ điều hành (nếu có)
+Thumbs.db
+.DS_Store
+.aider*
