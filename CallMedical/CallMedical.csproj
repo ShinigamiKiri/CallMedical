@@ -132,6 +132,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\ChatModels.cs" />
+    <Compile Include="Models\ProfileModels.cs" />
+    <Compile Include="Models\BookingModels.cs" />
+    <Compile Include="Models\TestModels.cs" />
+    <Compile Include="Models\UsersModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
