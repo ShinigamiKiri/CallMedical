@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - CallMedical</title>
+    <style>
+        :root {
+            --primary: #63B8FF;
+            --white: #ffffff;
+            --accent: #3A9EE8;
+            --text-dark: #333333;
+            --font-main: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --header-height: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header__logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .header__logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header__site-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .header__nav {
+            display: none;
+        }
+
+        .header__nav-list {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .header__nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .header__nav-link:hover {
+            color: var(--dark);
+            text-decoration: underline;
+        }
+
+        .header__auth {
+            display: none;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn--outline {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn--outline:hover {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+
+        .btn--white {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+
+        .btn--white:hover {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .header__hamburger {
+            display: block;
+            font-size: 1.8rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height) - 300px);
+            width: 100%;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 50px 5% 20px;
+            margin-top: 50px;
+        }
+
+        .footer__grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer__col-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .footer__list {
+            list-style: none;
+        }
+
+        .footer__list-item {
+            margin-bottom: 10px;
+        }
+
+        .footer__link {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer__link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer__copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Drawer */
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .drawer.open {
+            left: 0;
+        }
+
+        .drawer__close {
+            display: block;
+            text-align: right;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .drawer__nav-list {
+            list-style: none;
+        }
+
+        .drawer__nav-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .drawer__nav-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.open {
+            display: block;
+        }
+
+        /* Responsive Breakpoints */
+        @@media (min-width: 769px) {
+            .header__nav {
+                display: block;
+            }
+
+            .header__auth {
+                display: flex;
+            }
+
+            .header__hamburger {
+                display: none;
+            }
+
+            .footer__grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .main-content {
+                padding: 0;
+            }
+        }
+
+        @RenderSection("Styles", required: false)
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="@Url.Action("Index", "Home")" class="header__logo-container">
+            <div class="header__logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.89 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.89 20.11 3 19 3ZM19 19H5V5H19V19ZM11 7H13V11H17V13H13V17H11V13H7V11H11V7Z" fill="#63B8FF"/>
+                </svg>
+            </div>
+            <span class="header__site-name">CallMedical</span>
+        </a>
+
+        <nav class="header__nav" aria-label="Main navigation">
+            <ul class="header__nav-list">
+                <li><a href="/" class="header__nav-link">Home</a></li>
+                <li><a href="#" class="header__nav-link">Health Screening</a></li>
+                <li><a href="#" class="header__nav-link">Find Doctor</a></li>
+                <li><a href="#" class="header__nav-link">AI Assistant</a></li>
+                <li><a href="#" class="header__nav-link">About</a></li>
+            </ul>
+        </nav>
+
+        <div class="header__auth">
+            <a href="#" class="btn btn--outline">Login</a>
+            <a href="#" class="btn btn--white">Register</a>
+        </div>
+
+        <div class="header__hamburger" id="hamburger" aria-label="Open menu">☰</div>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+
+    <aside class="drawer" id="drawer">
+        <div class="drawer__close" id="drawerClose">&times;</div>
+        <nav class="drawer__nav" aria-label="Mobile navigation">
+            <ul class="drawer__nav-list">
+                <li class="drawer__nav-item"><a href="/" class="drawer__nav-link">Home</a></li>
+                <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">Health Screening</a></li>
+                <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">Find Doctor</a></li>
+                <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">AI Assistant</a></li>
+                <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">About</a></li>
+                <li class="drawer__nav-item" style="margin-top: 20px;">
+                    <a href="#" class="btn btn--white" style="display: block; text-align: center; background-color: var(--primary); color: white;">Login</a>
+                </li>
+                <li class="drawer__nav-item">
+                    <a href="#" class="btn btn--outline" style="display: block; text-align: center; border-color: var(--primary); color: var(--primary);">Register</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="footer__grid">
+            <div class="footer__col">
+                <h3 class="footer__col-title">CallMedical</h3>
+                <p style="opacity: 0.8;">Your trusted mental health companion. Get expert advice and AI support anytime, anywhere.</p>
+            </div>
+            <div class="footer__col">
+                <h3 class="footer__col-title">Services</h3>
+                <ul class="footer__list">
+                    <li class="footer__list-item"><a href="#" class="footer__link">Health Screening</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">Doctor Connection</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">AI Assistant</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h3 class="footer__col-title">Company</h3>
+                <ul class="footer__list">
+                    <li class="footer__list-item"><a href="#" class="footer__link">About Us</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">Contact</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h3 class="footer__col-title">Resources</h3>
+                <ul class="footer__list">
+                    <li class="footer__list-item"><a href="#" class="footer__link">Blog</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">FAQs</a></li>
+                    <li class="footer__list-item"><a href="#" class="footer__link">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h3 class="footer__col-title">Contact Us</h3>
+                <ul class="footer__list">
+                    <li class="footer__list-item">support@callmedical.com</li>
+                    <li class="footer__list-item">+1 (234) 567-890</li>
+                    <li class="footer__list-item">123 Health St, Medical City</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            &copy; @DateTime.Now.Year CallMedical. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('overlay');
+            const drawerClose = document.getElementById('drawerClose');
+
+            function toggleMenu() {
+                drawer.classList.toggle('open');
+                overlay.classList.toggle('open');
+                document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+            }
+
+            hamburger.addEventListener('click', toggleMenu);
+            drawerClose.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

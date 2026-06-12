@@ -1,33 +1,761 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+@{
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    ViewBag.Title = "Home - CallMedical";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<style>
+    /* DESIGN SYSTEM & ROOT */
+    :root {
+        --primary: #63B8FF;
+        --primary-dark: #1a6fc4;
+        --white: #FFFFFF;
+        --dark-text: #1a1a2e;
+        --gray-text: #6b7280;
+        --bg-light: #f0f8ff;
+        --card-shadow: 0 4px 16px rgba(99,184,255,0.12);
+        --radius: 12px;
+        --transition: 0.3s ease;
+    }
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+    /* GLOBAL ANIMATION CLASSES */
+    .animate-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .animate-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .section-padding {
+        padding: 80px 5%;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        color: var(--dark-text);
+        margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+        color: var(--gray-text);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* SECTION 1: HERO BANNER */
+    .hero {
+        width: 100%;
+        min-height: 480px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        display: flex;
+        align-items: center;
+        color: var(--white);
+        padding: 0 5%;
+        overflow: hidden;
+    }
+
+    .hero__content {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .hero__left {
+        flex: 0 0 60%;
+        animation: slideInLeft 0.8s ease-out forwards;
+    }
+
+    .hero__badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        font-weight: 800;
+    }
+
+    .hero__subtext {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 32px;
+        max-width: 540px;
+    }
+
+    .hero__btns {
+        display: flex;
+        gap: 16px;
+    }
+
+    .btn-hero {
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-block;
+    }
+
+    .btn-hero--primary {
+        background: var(--white);
+        color: var(--primary);
+    }
+
+    .btn-hero--primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .btn-hero--secondary {
+        border: 2px solid var(--white);
+        color: var(--white);
+    }
+
+    .btn-hero--secondary:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .hero__right {
+        flex: 0 0 40%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .hero__illustration {
+        width: 280px;
+        height: 280px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 100px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    @@keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-50px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* SECTION 2: FEATURE CARDS */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: var(--white);
+        padding: 40px 32px;
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        text-align: center;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .feature-card__icon {
+        width: 80px;
+        height: 80px;
+        background: #e8f4ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 24px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+        color: var(--dark-text);
+    }
+
+    .feature-card p {
+        color: var(--gray-text);
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .feature-card__link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 700;
+        transition: var(--transition);
+    }
+
+    .feature-card__link:hover {
+        text-decoration: underline;
+    }
+
+    /* SECTION 3: STATISTICS BAR */
+    .stats {
+        background: var(--primary);
+        padding: 60px 5%;
+        color: var(--white);
+    }
+
+    .stats__grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        text-align: center;
+    }
+
+    .stat-item__number {
+        font-size: 2.8rem;
+        font-weight: 800;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .stat-item__label {
+        font-size: 1rem;
+        opacity: 0.85;
+    }
+
+    /* SECTION 4: HOW IT WORKS */
+    .steps-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+        position: relative;
+    }
+
+    .steps-container::before {
+        content: '';
+        position: absolute;
+        top: 40px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        border-top: 2px dashed var(--primary);
+        z-index: 1;
+        opacity: 0.3;
+    }
+
+    .step-item {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .step__number {
+        width: 80px;
+        height: 80px;
+        background: var(--white);
+        border: 4px solid var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0 auto 20px;
+        transition: var(--transition);
+    }
+
+    .step-item:hover .step__number {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    .step__title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--dark-text);
+    }
+
+    .step__desc {
+        color: var(--gray-text);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* SECTION 5: FEATURED DOCTORS */
+    .doctor-scroll {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        padding: 20px 0 40px;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .doctor-scroll::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    .doctor-card {
+        flex: 0 0 280px;
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 32px 24px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .doctor-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .doctor__avatar {
+        width: 100px;
+        height: 100px;
+        background: #e8f4ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 20px;
+    }
+
+    .doctor__name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 4px;
+    }
+
+    .doctor__specialty {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .doctor__rating {
+        color: #ffc107;
+        margin-bottom: 8px;
+    }
+
+    .doctor__exp {
+        font-size: 0.85rem;
+        color: var(--gray-text);
+        margin-bottom: 20px;
+    }
+
+    .btn-book {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-book:hover {
+        background: var(--primary-dark);
+    }
+
+    /* SECTION 6: TESTIMONIALS */
+    .testimonials {
+        background: var(--bg-light);
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .testimonial-card {
+        background: var(--white);
+        padding: 32px;
+        border-radius: var(--radius);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .testimonial__quote-icon {
+        font-size: 40px;
+        color: var(--primary);
+        opacity: 0.3;
+        margin-bottom: 10px;
+        line-height: 1;
+    }
+
+    .testimonial__text {
+        font-style: italic;
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .testimonial__user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .testimonial__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .testimonial__info h4 {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .testimonial__info span {
+        font-size: 0.85rem;
+        color: var(--gray-text);
+    }
+
+    /* SECTION 7: CTA BANNER */
+    .cta-banner {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        padding: 80px 5%;
+        text-align: center;
+        color: var(--white);
+    }
+
+    .cta-banner h2 {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+    }
+
+    .cta-banner p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 40px;
+    }
+
+    .btn-large {
+        padding: 18px 40px;
+        background: var(--white);
+        color: var(--primary);
+        font-size: 1.2rem;
+        font-weight: 800;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-block;
+    }
+
+    .btn-large:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @@media (max-width: 1023px) {
+        .features-grid, .testimonials-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .stats__grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .hero h1 { font-size: 2.5rem; }
+    }
+
+    @@media (max-width: 767px) {
+        .hero { min-height: 320px; padding: 40px 5%; }
+        .hero__content { flex-direction: column; text-align: center; }
+        .hero__left { flex: 0 0 100%; }
+        .hero__right { display: none; }
+        .hero__subtext { margin-left: auto; margin-right: auto; }
+        .hero__btns { justify-content: center; }
+
+        .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+        
+        .steps-container { flex-direction: column; gap: 30px; }
+        .steps-container::before { display: none; }
+
+        .section-title { font-size: 1.8rem; }
+        .cta-banner h2 { font-size: 1.8rem; }
+    }
+
+    @@media (max-width: 479px) {
+        .hero__illustration { display: none; }
+    }
+</style>
+
+<!-- SECTION 1: HERO -->
+<section class="hero">
+    <div class="hero__content">
+        <div class="hero__left">
+            <span class="hero__badge">🧠 Mental Health Platform</span>
+            <h1>Chăm Sóc Sức Khỏe Tâm Thần — Kết Nối Bác Sĩ & AI</h1>
+            <p class="hero__subtext">Sàng lọc sức khỏe tâm thần nhanh chóng, tìm kiếm bác sĩ phù hợp, và nhận hỗ trợ từ trợ lý AI 24/7</p>
+            <div class="hero__btns">
+                <a href="#" class="btn-hero btn-hero--primary">Bắt Đầu Sàng Lọc</a>
+                <a href="#" class="btn-hero btn-hero--secondary">Tìm Bác Sĩ</a>
+            </div>
+        </div>
+        <div class="hero__right">
+            <div class="hero__illustration">🏥</div>
+        </div>
     </div>
-</main>
+</section>
+
+<!-- SECTION 2: FEATURE CARDS -->
+<section class="section-padding">
+    <div class="section-header">
+        <h2 class="section-title">Dịch Vụ Của Chúng Tôi</h2>
+        <p class="section-subtitle">Hệ thống toàn diện hỗ trợ sức khỏe tâm thần</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card animate-in">
+            <div class="feature-card__icon">📋</div>
+            <h3>Sàng Lọc Sức Khỏe</h3>
+            <p>Bộ câu hỏi chuẩn hóa giúp đánh giá tình trạng sức khỏe tâm thần của bạn một cách nhanh chóng và chính xác</p>
+            <a href="#" class="feature-card__link">Bắt đầu ngay →</a>
+        </div>
+        <div class="feature-card animate-in">
+            <div class="feature-card__icon">👨‍⚕️</div>
+            <h3>Kết Nối Bác Sĩ</h3>
+            <p>Tìm kiếm và đặt lịch hẹn với các chuyên gia tâm lý, bác sĩ tâm thần hàng đầu trên toàn quốc</p>
+            <a href="#" class="feature-card__link">Tìm bác sĩ →</a>
+        </div>
+        <div class="feature-card animate-in">
+            <div class="feature-card__icon">🤖</div>
+            <h3>Trợ Lý AI 24/7</h3>
+            <p>Trợ lý ảo thông minh sẵn sàng lắng nghe, tư vấn sơ bộ và hướng dẫn bạn bất cứ lúc nào</p>
+            <a href="#" class="feature-card__link">Chat ngay →</a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 3: STATISTICS BAR -->
+<section class="stats">
+    <div class="stats__grid">
+        <div class="stat-item">
+            <span class="stat-item__number" data-target="10000">0</span>
+            <span class="stat-item__label">Người dùng tin tưởng</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-item__number" data-target="500">0</span>
+            <span class="stat-item__label">Bác sĩ chuyên khoa</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-item__number" data-target="98">0</span>
+            <span class="stat-item__label">Hài lòng dịch vụ (%)</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-item__number" data-target="24">0</span>
+            <span class="stat-item__label">Hỗ trợ liên tục (h)</span>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 4: HOW IT WORKS -->
+<section class="section-padding">
+    <div class="section-header">
+        <h2 class="section-title">Cách Hoạt Động</h2>
+        <p class="section-subtitle">3 bước đơn giản để bắt đầu hành trình chăm sóc sức khỏe tâm thần</p>
+    </div>
+    <div class="steps-container">
+        <div class="step-item animate-in">
+            <div class="step__number">01</div>
+            <h3 class="step__title">Sàng Lọc</h3>
+            <p class="step__desc">Hoàn thành bài kiểm tra sức khỏe tâm thần trực tuyến</p>
+        </div>
+        <div class="step-item animate-in">
+            <div class="step__number">02</div>
+            <h3 class="step__title">Nhận Kết Quả</h3>
+            <p class="step__desc">Xem báo cáo chi tiết và gợi ý từ hệ thống AI</p>
+        </div>
+        <div class="step-item animate-in">
+            <div class="step__number">03</div>
+            <h3 class="step__title">Kết Nối Chuyên Gia</h3>
+            <p class="step__desc">Đặt lịch tư vấn với bác sĩ phù hợp</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 5: FEATURED DOCTORS -->
+<section class="section-padding">
+    <div class="section-header">
+        <h2 class="section-title">Bác Sĩ Nổi Bật</h2>
+        <p class="section-subtitle">Đội ngũ chuyên gia tâm lý và tâm thần hàng đầu</p>
+    </div>
+    <div class="doctor-scroll">
+        <div class="doctor-card animate-in">
+            <div class="doctor__avatar">👤</div>
+            <h3 class="doctor__name">BS. Nguyễn Văn A</h3>
+            <p class="doctor__specialty">Tâm lý lâm sàng</p>
+            <div class="doctor__rating">⭐⭐⭐⭐⭐ 4.9</div>
+            <p class="doctor__exp">10 năm kinh nghiệm</p>
+            <a href="#" class="btn-book">Đặt Lịch</a>
+        </div>
+        <div class="doctor-card animate-in">
+            <div class="doctor__avatar">👤</div>
+            <h3 class="doctor__name">BS. Trần Thị Hạnh</h3>
+            <p class="doctor__specialty">Bác sĩ Tâm thần</p>
+            <div class="doctor__rating">⭐⭐⭐⭐⭐ 5.0</div>
+            <p class="doctor__exp">15 năm kinh nghiệm</p>
+            <a href="#" class="btn-book">Đặt Lịch</a>
+        </div>
+        <div class="doctor-card animate-in">
+            <div class="doctor__avatar">👤</div>
+            <h3 class="doctor__name">BS. Lê Hoàng Nam</h3>
+            <p class="doctor__specialty">Tư vấn tâm lý Nhi</p>
+            <div class="doctor__rating">⭐⭐⭐⭐ 4.8</div>
+            <p class="doctor__exp">8 năm kinh nghiệm</p>
+            <a href="#" class="btn-book">Đặt Lịch</a>
+        </div>
+        <div class="doctor-card animate-in">
+            <div class="doctor__avatar">👤</div>
+            <h3 class="doctor__name">BS. Phạm Minh Tuấn</h3>
+            <p class="doctor__specialty">Trị liệu hành vi</p>
+            <div class="doctor__rating">⭐⭐⭐⭐⭐ 4.9</div>
+            <p class="doctor__exp">12 năm kinh nghiệm</p>
+            <a href="#" class="btn-book">Đặt Lịch</a>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 6: TESTIMONIALS -->
+<section class="section-padding testimonials">
+    <div class="section-header">
+        <h2 class="section-title">Người Dùng Nói Gì</h2>
+        <p class="section-subtitle">Phản hồi thực tế từ những người đã sử dụng CallMedical</p>
+    </div>
+    <div class="testimonials-grid">
+        <article class="testimonial-card animate-in">
+            <div class="testimonial__quote-icon">“</div>
+            <p class="testimonial__text">"Ứng dụng giúp tôi nhận ra mình cần hỗ trợ sớm hơn. Bác sĩ rất tận tâm!"</p>
+            <div class="testimonial__user">
+                <div class="testimonial__avatar">TB</div>
+                <div class="testimonial__info">
+                    <h4>Trần Thị B</h4>
+                    <span>Nhân viên văn phòng</span>
+                </div>
+            </div>
+        </article>
+        <article class="testimonial-card animate-in">
+            <div class="testimonial__quote-icon">“</div>
+            <p class="testimonial__text">"Trợ lý AI rất thân thiện, giúp tôi vượt qua giai đoạn khó khăn."</p>
+            <div class="testimonial__user">
+                <div class="testimonial__avatar">LC</div>
+                <div class="testimonial__info">
+                    <h4>Lê Văn C</h4>
+                    <span>Sinh viên</span>
+                </div>
+            </div>
+        </article>
+        <article class="testimonial-card animate-in">
+            <div class="testimonial__quote-icon">“</div>
+            <p class="testimonial__text">"Đặt lịch với bác sĩ dễ dàng, tiết kiệm thời gian rất nhiều."</p>
+            <div class="testimonial__user">
+                <div class="testimonial__avatar">PD</div>
+                <div class="testimonial__info">
+                    <h4>Phạm Thị D</h4>
+                    <span>Giáo viên</span>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- SECTION 7: CTA BANNER -->
+<section class="cta-banner">
+    <div class="animate-in">
+        <h2>Bắt Đầu Hành Trình Chăm Sóc Sức Khỏe Tâm Thần Hôm Nay</h2>
+        <p>Miễn phí — Không cần đăng ký ngay — Kết quả tức thì</p>
+        <a href="#" class="btn-large">Sàng Lọc Miễn Phí Ngay</a>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 1. INTERSECTION OBSERVER FOR ANIMATIONS ---
+        const animateItems = document.querySelectorAll('.animate-in');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Stop observing after animation triggers
+                    animationObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        animateItems.forEach(item => {
+            animationObserver.observe(item);
+        });
+
+        // --- 2. STATS COUNTER ANIMATION ---
+        const statNumbers = document.querySelectorAll('.stat-item__number');
+        let statsAnimated = false;
+
+        const countUp = (element) => {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const startTime = performance.now();
+            
+            const updateCount = (timestamp) => {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out function for smoother finish
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(easeOut * target);
+                
+                element.innerText = current.toLocaleString() + (target === 10000 || target === 500 ? '+' : '');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCount);
+                }
+            };
+            
+            requestAnimationFrame(updateCount);
+        };
+
+        const statsSection = document.querySelector('.stats');
+        const statsObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !statsAnimated) {
+                statNumbers.forEach(num => countUp(num));
+                statsAnimated = true;
+            }
+        }, { threshold: 0.5 });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    });
+</script>
