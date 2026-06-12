@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,18 +13,25 @@ namespace CallMedical.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult HealthScreening()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult FindDoctor()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
+        }
+
+        public ActionResult About()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult TestError()
+        {
+            return View("~/Views/Shared/Error.cshtml");
         }
     }
 }

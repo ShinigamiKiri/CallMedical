@@ -1,13 +1,78 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    ViewBag.Title = "Lỗi - CallMedical";
+}
+
+<style>
+    .error-page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 100px 20px;
+        min-height: 70vh;
+        background: radial-gradient(circle at center, #eef8ff 0%, #ffffff 100%);
+    }
+
+    .error-icon {
+        font-size: 8rem;
+        margin-bottom: 30px;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .error-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #0F172A;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+    }
+
+    .error-message {
+        font-size: 1.25rem;
+        color: #64748B;
+        max-width: 600px;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    .btn-home {
+        padding: 16px 40px;
+        background: #63B8FF;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(99, 184, 255, 0.3);
+    }
+
+    .btn-home:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(99, 184, 255, 0.4);
+        background: #0084ff;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .error-shapes {
+        position: absolute;
+        z-index: -1;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="error-page">
+    <div class="error-icon">🧩</div>
+    <h1 class="error-title">Ôi hỏng!</h1>
+    <p class="error-message">
+        Trang bạn tìm không tồn tại hoặc hệ thống đang gặp sự cố. 
+        Đừng lo lắng, hãy để chúng tôi đưa bạn về nơi an toàn.
+    </p>
+    <a href="@Url.Action("Index", "Home")" class="btn-home">Quay lại Trang Chủ</a>
+</div>
