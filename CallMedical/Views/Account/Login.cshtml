@@ -1,0 +1,228 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #63B8FF;
+        --primary-soft: #eef8ff;
+        --bg-light: #F8FAFC;
+        --dark-text: #0F172A;
+        --card-shadow: 0 10px 40px rgba(99,184,255,0.1);
+        --radius: 20px;
+    }
+
+    .auth-container {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg-light);
+        padding: 40px 20px;
+    }
+
+    .auth-card {
+        background: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+        width: 100%;
+        max-width: 450px;
+        transition: transform 0.3s ease;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .auth-header h2 {
+            color: var(--dark-text);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: #64748B;
+            font-size: 0.95rem;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #E2E8F0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        max-width: none !important; /* Override Site.css */
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+    .btn-auth {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+        .btn-auth:hover {
+            background-color: #4A90E2;
+            transform: translateY(-2px);
+        }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #64748B;
+    }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    .error-msg {
+        color: #EF4444;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .loading-spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Chào mừng trở lại</h2>
+            <p>Đăng nhập để tiếp tục với CallMedical</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" id="Email" class="form-control" placeholder="example@email.com" required>
+                <div id="emailError" class="error-msg">Vui lòng nhập email hợp lệ</div>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Mật khẩu</label>
+                <input type="password" id="Password" class="form-control" placeholder="••••••••" required>
+                <div id="passwordError" class="error-msg">Mật khẩu không được để trống</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <label style="display: flex; align-items: center; font-size: 0.85rem; cursor: pointer;">
+                    <input type="checkbox" style="margin-right: 8px;"> Ghi nhớ tôi
+                </label>
+                <a href="@Url.Action("ForgotPassword", "Account")" style="font-size: 0.85rem; color: var(--primary); text-decoration: none;">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn-auth" id="btnLogin">
+                <span class="loading-spinner" id="spinner"></span>
+                Đăng nhập
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký ngay</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('Email').value;
+        const password = document.getElementById('Password').value;
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnLogin');
+
+        // Reset errors
+        document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+
+        // Basic validation
+        let isValid = true;
+        if (!email || !email.includes('@@')) {
+            document.getElementById('emailError').style.display = 'block';
+            isValid = false;
+        }
+        if (!password) {
+            document.getElementById('passwordError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Show loading
+        spinner.style.display = 'inline-block';
+        btnText.disabled = true;
+
+        try {
+            const response = await fetch('@Url.Action("Login", "Account")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert(data.message || 'Đăng nhập thất bại.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+        } finally {
+            spinner.style.display = 'none';
+            btnText.disabled = false;
+        }
+    });
+</script>

@@ -270,6 +270,77 @@
             }
         }
 
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown__toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown__toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .dropdown__avatar {
+            width: 35px;
+            height: 35px;
+            background-color: var(--white);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .dropdown__menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+            z-index: 1001;
+            margin-top: 10px;
+        }
+
+        .dropdown__menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .dropdown__item {
+            color: var(--text-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown__item:hover {
+            background-color: #f8f9fa;
+            color: var(--primary);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @RenderSection("Styles", required: false)
     </style>
 </head>
@@ -294,8 +365,28 @@
         </nav>
 
         <div class="header__auth">
-            <a href="#" class="btn btn--outline">Đăng Nhập</a>
-            <a href="#" class="btn btn--white">Đăng Ký</a>
+            @if (Session["UserId"] != null)
+            {
+                <div class="dropdown" id="userDropdown">
+                    <div class="dropdown__toggle" id="dropdownToggle">
+                        <span style="color: white; font-weight: 500;">@Session["UserName"]</span>
+                        <div class="dropdown__avatar">
+                            @(Session["UserName"].ToString().Substring(0, 1).ToUpper())
+                        </div>
+                    </div>
+                    <div class="dropdown__menu" id="dropdownMenu">
+                        <a href="#" class="dropdown__item">Hồ sơ cá nhân</a>
+                        <a href="#" class="dropdown__item">Đổi mật khẩu</a>
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 0;">
+                        <a href="@Url.Action("Logout", "Account")" class="dropdown__item" style="color: #EF4444;">Đăng xuất</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Account")" class="btn btn--outline">Đăng Nhập</a>
+                <a href="@Url.Action("Register", "Account")" class="btn btn--white">Đăng Ký</a>
+            }
         </div>
 
         <div class="header__hamburger" id="hamburger" aria-label="Open menu">☰</div>
@@ -311,12 +402,24 @@
                 <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">Sàng Lọc Sức Khỏe</a></li>
                 <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">Tìm Bác Sĩ</a></li>
                 <li class="drawer__nav-item"><a href="#" class="drawer__nav-link">Giới Thiệu</a></li>
-                <li class="drawer__nav-item" style="margin-top: 20px;">
-                    <a href="#" class="btn btn--white" style="display: block; text-align: center; background-color: var(--primary); color: white;">Đăng Nhập</a>
-                </li>
-                <li class="drawer__nav-item">
-                    <a href="#" class="btn btn--outline" style="display: block; text-align: center; border-color: var(--primary); color: var(--primary);">Đăng Ký</a>
-                </li>
+                
+                @if (Session["UserId"] != null)
+                {
+                    <li class="drawer__nav-item" style="margin-top: 20px;">
+                        <p style="color: var(--primary); font-weight: bold; margin-bottom: 10px;">Xin chào, @Session["UserName"]</p>
+                        <a href="#" class="drawer__nav-link" style="font-size: 1rem;">Hồ sơ cá nhân</a>
+                        <a href="@Url.Action("Logout", "Account")" class="drawer__nav-link" style="font-size: 1rem; color: #EF4444; margin-top: 10px;">Đăng xuất</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="drawer__nav-item" style="margin-top: 20px;">
+                        <a href="@Url.Action("Login", "Account")" class="btn btn--white" style="display: block; text-align: center; background-color: var(--primary); color: white;">Đăng Nhập</a>
+                    </li>
+                    <li class="drawer__nav-item">
+                        <a href="@Url.Action("Register", "Account")" class="btn btn--outline" style="display: block; text-align: center; border-color: var(--primary); color: var(--primary);">Đăng Ký</a>
+                    </li>
+                }
             </ul>
         </nav>
     </aside>
@@ -371,6 +474,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Drawer
             const hamburger = document.getElementById('hamburger');
             const drawer = document.getElementById('drawer');
             const overlay = document.getElementById('overlay');
@@ -382,9 +486,24 @@
                 document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
             }
 
-            hamburger.addEventListener('click', toggleMenu);
-            drawerClose.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
+            if(hamburger) hamburger.addEventListener('click', toggleMenu);
+            if(drawerClose) drawerClose.addEventListener('click', toggleMenu);
+            if(overlay) overlay.addEventListener('click', toggleMenu);
+
+            // User Dropdown
+            const dropdownToggle = document.getElementById('dropdownToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function() {
+                    dropdownMenu.classList.remove('show');
+                });
+            }
         });
     </script>
     @RenderSection("Scripts", required: false)

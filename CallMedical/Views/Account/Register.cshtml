@@ -1,0 +1,217 @@
+﻿@{
+    ViewBag.Title = "Đăng ký";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #63B8FF;
+        --primary-soft: #eef8ff;
+        --bg-light: #F8FAFC;
+        --dark-text: #0F172A;
+        --card-shadow: 0 10px 40px rgba(99,184,255,0.1);
+        --radius: 20px;
+    }
+
+    .auth-container {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg-light);
+        padding: 40px 20px;
+    }
+
+    .auth-card {
+        background: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .auth-header h2 {
+            color: var(--dark-text);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #E2E8F0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        max-width: none !important;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+    .btn-auth {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+
+        .btn-auth:hover {
+            background-color: #4A90E2;
+            transform: translateY(-2px);
+        }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #64748B;
+    }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    .error-msg {
+        color: #EF4444;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: none;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Tạo tài khoản mới</h2>
+            <p>Tham gia cộng đồng chăm sóc sức khỏe tâm thần</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="FullName">Họ và tên</label>
+                <input type="text" id="FullName" class="form-control" placeholder="Nguyễn Văn A" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" id="Email" class="form-control" placeholder="example@email.com" required>
+                <div id="emailError" class="error-msg">Vui lòng nhập email hợp lệ</div>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Mật khẩu</label>
+                <input type="password" id="Password" class="form-control" placeholder="••••••••" required>
+                <div id="passwordError" class="error-msg">Mật khẩu phải từ 6 ký tự</div>
+            </div>
+
+            <div class="form-group">
+                <label for="ConfirmPassword">Xác nhận mật khẩu</label>
+                <input type="password" id="ConfirmPassword" class="form-control" placeholder="••••••••" required>
+                <div id="confirmError" class="error-msg">Mật khẩu xác nhận không khớp</div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label style="display: flex; align-items: flex-start; font-size: 0.85rem; cursor: pointer; font-weight: 400;">
+                    <input type="checkbox" style="margin-right: 10px; margin-top: 4px;" required>
+                    <span>Tôi đồng ý với <a href="#" style="color: var(--primary); text-decoration: none;">Điều khoản dịch vụ</a> và <a href="#" style="color: var(--primary); text-decoration: none;">Chính sách bảo mật</a> của CallMedical.</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-auth" id="btnRegister">Đăng ký tài khoản</button>
+        </form>
+
+        <div class="auth-footer">
+            Đã có tài khoản? <a href="@Url.Action("Login", "Account")">Đăng nhập ngay</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const fullName = document.getElementById('FullName').value;
+        const email = document.getElementById('Email').value;
+        const password = document.getElementById('Password').value;
+        const confirmPassword = document.getElementById('ConfirmPassword').value;
+
+        // Reset errors
+        document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+
+        // Validation
+        let isValid = true;
+        if (!email.includes('@@')) {
+            document.getElementById('emailError').style.display = 'block';
+            isValid = false;
+        }
+        if (password.length < 6) {
+            document.getElementById('passwordError').style.display = 'block';
+            isValid = false;
+        }
+        if (password !== confirmPassword) {
+            document.getElementById('confirmError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const btn = document.getElementById('btnRegister');
+        btn.disabled = true;
+        btn.innerText = 'Đang xử lý...';
+
+        try {
+            const response = await fetch('@Url.Action("Register", "Account")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ fullName, email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert(data.message || 'Đăng ký thất bại.');
+            }
+        } catch (error) {
+            console.error('Register error:', error);
+            alert('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Đăng ký tài khoản';
+        }
+    });
+</script>
